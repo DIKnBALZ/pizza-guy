@@ -73,7 +73,7 @@ function create() {
 	topmenu.cameras = [uicam];
 	add(topmenu);
 
-	character = new Player(0, 0, null, true);
+	character = new Player(0, 0, null, true, 'default');
 	character.cameras = [charcam];
 	character.screenCenter();
 	add(character);
