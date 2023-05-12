@@ -32,11 +32,12 @@ class Player extends funkin.backend.FunkinSprite {
 		x = xPos;
 		y = yPos;
 		debugMode = debug;
+		curCharacter = skin;
 
 		charJson = Json.parse(Assets.getText(Paths.json('pizza/characters/'+curCharacter)));
 
-		if (skin != null && Assets.exists(Paths.image('platformer/skins/player/'+skin)))
-			loadGraphic(Paths.image('platformer/skins/player/'+skin), true, 100, 100);
+		if (skin != null && Assets.exists(Paths.image('platformer/skins/player/'+curCharacter)))
+			loadGraphic(Paths.image('platformer/skins/player/'+curCharacter), true, 100, 100);
 		else
 			loadGraphic(Paths.image('platformer/skins/player/main'), true, 100, 100);
 
@@ -92,16 +93,14 @@ class Player extends funkin.backend.FunkinSprite {
 					sprinting = FlxG.keys.pressed.SHIFT;
 		
 					if (FlxG.keys.pressed.E || FlxG.mouse.pressed) {
-						if (Math.abs(velocity.x) >= maxVelX-1 && !dashed) {
-							if (!sprinting) animation.play('attack', false);
-							else {
-								dashed = true;
-								animation.play('dash', false);
-								velocity.y -= Math.abs(velocity.y);
-								new FlxTimer().start(0.5, function(timer:FlxTimer) {
-									animation.stop();
-								});
-							}
+						if (!sprinting || dashed) animation.play('attack', false);
+						else if (Math.abs(velocity.x) >= maxVelX-1 && !dashed && sprinting) {
+							dashed = true;
+							animation.play('dash', false);
+							velocity.y -= Math.abs(velocity.y);
+							new FlxTimer().start(0.5, function(timer:FlxTimer) {
+								animation.stop();
+							});
 						}
 					}
 		

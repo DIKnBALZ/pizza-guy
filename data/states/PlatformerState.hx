@@ -73,7 +73,7 @@ function create() {
 	var civilian = new Civilian(50, 10, null, false, bgJson.civilianSkin);
 	civilians.push(civilian);
 
-	var testnpc:NPC = new NPC(1152, 448);
+	var testnpc:NPC = new NPC(1152, 448, null, false, bgJson.npcSkin);
 	npcs.push(testnpc);
 
 	tiles = new StringMap();
@@ -90,9 +90,7 @@ function create() {
 	tileGroup = new FlxTypedGroup();
 	for (i in ass) {
 		var cock = i.split(',');
-		var tile:Tile = new Tile(cock[2], backgroundName, false);
-		tile.x = cock[0];
-		tile.y = cock[1];
+		var tile:Tile = new Tile(cock[0], cock[1], null, cock[2], backgroundName);
 		tile.scale.set(4, 4);
 		tile.updateHitbox();
 		tiles.set(cock[0]+','+cock[1], [tile, cock[2]]);

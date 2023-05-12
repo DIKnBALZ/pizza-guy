@@ -23,11 +23,12 @@ class Civilian extends funkin.backend.FunkinSprite {
 		x = xPos;
 		y = yPos;
 		debugMode = debug;
+		curCharacter = skin;
 
 		charJson = Json.parse(Assets.getText(Paths.json('pizza/characters/'+curCharacter)));
 
-		if (skin != null && Assets.exists(Paths.image('platformer/skins/civilian/'+skin)))
-			loadGraphic(Paths.image('platformer/skins/civilian/'+skin), true, 100, 100);
+		if (skin != null && Assets.exists(Paths.image('platformer/skins/civilian/'+curCharacter)))
+			loadGraphic(Paths.image('platformer/skins/civilian/'+curCharacter), true, 100, 100);
 		else
 			loadGraphic(Paths.image('platformer/skins/civilian/main'), true, 100, 100);
 

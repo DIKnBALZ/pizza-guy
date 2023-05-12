@@ -211,9 +211,7 @@ function update(elapsed:Float) {
 				remove(tiles.get(highlight.x+','+highlight.y)[0]);
 				tiles.remove(highlight.x+','+highlight.y);
 			}
-			var tile:Tile = new Tile(curShit==null?0:curShit, 'default', true);
-			tile.x = highlight.x;
-			tile.y = highlight.y;
+			var tile:Tile = new Tile(highlight.x, highlight.y, null, curShit==null?0:curShit, null);
 			tile.scale.set(4, 4);
 			tile.updateHitbox();
 			tile.cameras = [tilecam];
@@ -286,9 +284,7 @@ function open() {
 		ass = ass.split('\n');
 		for (i in ass) {
 			var cock = i.split(',');
-			var tile:Tile = new Tile(cock[2], 'default', true);
-			tile.x = cock[0];
-			tile.y = cock[1];
+			var tile:Tile = new Tile(cock[0], cock[1], null, cock[2], null);
 			tile.scale.set(4, 4);
 			tile.updateHitbox();
 			tile.cameras = [tilecam];

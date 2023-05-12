@@ -1,0 +1,16 @@
+{
+	"animations": [
+		{
+			"name": "idle",
+			"indices": [0],
+			"fps": 14,
+			"loop": true
+		},
+		{
+			"name": "talk",
+			"indices": [1,2],
+			"fps": 7,
+			"loop": true
+		}
+	]
+}
