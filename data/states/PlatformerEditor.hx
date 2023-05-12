@@ -159,7 +159,7 @@ function create() {
 	bg.scrollFactor.set();
 	add(bg);
 
-	highlight = new Tile(0, 'default');
+	highlight = new Tile(0, 'default', true);
 	highlight.cameras = [tilecam];
 	highlight.scale.set(4, 4);
 	highlight.updateHitbox();
@@ -194,7 +194,7 @@ function update(elapsed:Float) {
 	if (!placingTrigger) {
 		if (!switched) {
 			remove(highlight);
-			highlight = new Tile(0, 'default');
+			highlight = new Tile(0, 'default', true);
 			highlight.cameras = [tilecam];
 			highlight.scale.set(4, 4);
 			highlight.updateHitbox();
@@ -211,7 +211,7 @@ function update(elapsed:Float) {
 				remove(tiles.get(highlight.x+','+highlight.y)[0]);
 				tiles.remove(highlight.x+','+highlight.y);
 			}
-			var tile:Tile = new Tile(curShit==null?0:curShit, 'default');
+			var tile:Tile = new Tile(curShit==null?0:curShit, 'default', true);
 			tile.x = highlight.x;
 			tile.y = highlight.y;
 			tile.scale.set(4, 4);
@@ -286,7 +286,7 @@ function open() {
 		ass = ass.split('\n');
 		for (i in ass) {
 			var cock = i.split(',');
-			var tile:Tile = new Tile(cock[2], 'default');
+			var tile:Tile = new Tile(cock[2], 'default', true);
 			tile.x = cock[0];
 			tile.y = cock[1];
 			tile.scale.set(4, 4);

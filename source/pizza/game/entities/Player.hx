@@ -4,6 +4,8 @@ import Math;
 import Std;
 import pizza.game.entities.NPC;
 import openfl.utils.Assets;
+import haxe.Json;
+import funkin.backend.scripting.Script;
 
 class Player extends funkin.backend.FunkinSprite {
 	public var sprinting:Bool = false;
@@ -11,40 +13,42 @@ class Player extends funkin.backend.FunkinSprite {
 	public var jumpHeight:Float = 750;
 	public var somethingIDK:Float = 750;
 	public var maxVelX:Float = 800;
-	public var blacklist:Array<String> = ['attack', 'dash'];
-	public var attackAnims:Array<String> = ['attack', 'dash', 'slide'];
-	public var attackHitFrames:Array<Dynamic> = [[2,3], [0,1], [0,1]];
+	public var blacklist:Array<String> = [];
+	public var attackAnims:Array<String> = [];
+	public var attackHitFrames:Array<Dynamic> = [];
 	public var DONT:Bool = false;
-	// public var multiP:Bool = false;
-	// public var multiID:Int = 0;
 	public var sliding:Bool = false;
-	public static var disableControls:Bool = false;
+	public var disableControls:Bool = false;
 	public var dashed:Bool = false;
 	public var playedWalkSound:Bool = false;
 	public var playedLandSound:Bool = false;
 	public var debugMode:Bool = false;
 	public var activeHit:Bool = false;
+	public var curCharacter:String = 'default';
+	public var charJson;
+	public var charScript;
 	public function new(xPos:Float, yPos:Float, ?ignore, ?debug:Bool = false, ?skin:String = null) {
 		moves = true;
 		x = xPos;
 		y = yPos;
 		debugMode = debug;
-		// multiP = multi;
-		// multiID = id;
 
-		if (skin != null && Assets.exists(Paths.image('platformer/stages/'+skin+'/player')))
-			loadGraphic(Paths.image('platformer/stages/'+skin+'/player'), true, 100, 100);
+		charJson = Json.parse(Assets.getText(Paths.json('pizza/characters/'+curCharacter)));
+
+		if (skin != null && Assets.exists(Paths.image('platformer/skins/player/'+skin)))
+			loadGraphic(Paths.image('platformer/skins/player/'+skin), true, 100, 100);
 		else
-			loadGraphic(Paths.image('platformer/player/main'), true, 100, 100);
+			loadGraphic(Paths.image('platformer/skins/player/main'), true, 100, 100);
 
-		animation.add('idle', [0,1,2,3,4,5,6], 14, true);
-		animation.add('jump', [7,8,9], 14, false);
-		animation.add('fall', [10,11], 14, true);
-		animation.add('run', [12,13,14,15], 14, true);
-		animation.add('attack', [18,19,20,21], 14, false);
-		animation.add('roll', [23,24,25,26,27,28,29], 28, false);
-		animation.add('slide', [30,29], 14, true);
-		animation.add('dash', [24,25], 14, true);
+		for(anim in charJson.animations) {
+			if (anim.hitframes != null && anim.hitframes != []) {
+				attackAnims.push(anim.name);
+				attackHitFrames.push(anim.hitframes);
+			}
+			if (anim.blacklist) blacklist.push(anim.name);
+			animation.add(anim.name, anim.indices, anim.fps, anim.loop);
+		}
+
 		if (!debugMode) {
 			scale.set(1,1.91);
 			updateHitbox();
@@ -54,15 +58,22 @@ class Player extends funkin.backend.FunkinSprite {
 			scale.set(2,2);
 			updateHitbox();
 		}
-		// offset.y = -55;
 		drag.x = 5000;
 		drag.y = 700;
 		maxVelocity.x = maxVelX;
 		maxVelocity.y = 1000;
+
+		if (Assets.exists(Paths.script('data/pizza/characters/'+skin))) {
+			charScript = Script.create(Paths.script('data/pizza/characters/'+skin));
+			charScript.load();
+			charScript.call('create', [xPos, yPos, debug, skin]);
+		}
 	}
 
 	public function update(elapsed:Float) {
-		if (!debugMode) {
+		if (charScript != null) charScript.call('update', [elapsed]);
+
+		if (!debugMode && !disableControls) {
 			if (!(blacklist.contains(animation.name) && !animation.curAnim.finished) && !disableControls) {
 				if (!sliding) {
 					if (FlxG.keys.pressed.A) acceleration.x = -speed;
@@ -98,7 +109,6 @@ class Player extends funkin.backend.FunkinSprite {
 						if (isTouching(0x1000) && !sliding && velocity.x != 0) {
 							animation.play('roll', true);
 							sliding = true;
-							// velocity.x += flipX?500:-500;
 						}
 					}
 
@@ -150,6 +160,8 @@ class Player extends funkin.backend.FunkinSprite {
 
 			activeHit = attackAnims.contains(animation.name) && attackHitFrames[attackAnims.indexOf(animation.name)].contains(animation.curAnim.curFrame);
 		}
+
+		if (charScript != null) charScript.call('postUpdate', [elapsed]);
 
 		super.update(elapsed);
 	}

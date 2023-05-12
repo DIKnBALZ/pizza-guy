@@ -1,0 +1,57 @@
+{
+	"animations": [
+		{
+			"name": "idle",
+			"indices": [0,1,2,3,4,5,6],
+			"fps": 14,
+			"loop": true
+		},
+		{
+			"name": "jump",
+			"indices": [7,8,9],
+			"fps": 14,
+			"loop": false
+		},
+		{
+			"name": "fall",
+			"indices": [10,11],
+			"fps": 14,
+			"loop": true
+		},
+		{
+			"name": "run",
+			"indices": [12,13,14,15],
+			"fps": 14,
+			"loop": true
+		},
+		{
+			"name": "attack",
+			"indices": [18,19,20,21],
+			"hitframes": [2,3],
+			"fps": 14,
+			"loop": false,
+			"blacklist": true
+		},
+		{
+			"name": "slide",
+			"indices": [30,29],
+			"hitframes": [0,1],
+			"fps": 14,
+			"loop": true
+		},
+		{
+			"name": "dash",
+			"indices": [24,25],
+			"hitframes": [0,1],
+			"fps": 14,
+			"loop": true,
+			"blacklist": true
+		},
+		{
+			"name": "roll",
+			"indices": [23,24,25,26,27,28,29],
+			"fps": 28,
+			"loop": false
+		}
+	]
+}

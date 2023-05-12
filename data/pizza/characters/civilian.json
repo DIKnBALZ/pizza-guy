@@ -1,0 +1,22 @@
+{
+	"animations": [
+		{
+			"name": "idle",
+			"indices": [0],
+			"fps": 14,
+			"loop": true
+		},
+		{
+			"name": "run",
+			"indices": [1,2,3,4,5],
+			"fps": 14,
+			"loop": true
+		},
+		{
+			"name": "death",
+			"indices": [6],
+			"fps": 14,
+			"loop": true
+		}
+	]
+}

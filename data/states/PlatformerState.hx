@@ -7,6 +7,8 @@ import pizza.game.objects.Particle;
 
 import sys.io.File;
 
+import openfl.utils.Assets;
+
 import lime.app.Application;
 
 import haxe.io.Path;
@@ -31,6 +33,7 @@ static var backgroundName:String = 'ruins';
 static var curNPC:NPC = null;
 static var scripts:ScriptPack;
 static var bgScript:Script;
+static var bgJson;
 var doors:StringMap<Array>;
 var tiles:StringMap<Array>;
 var tileGroup:FlxTypedGroup;
@@ -50,10 +53,12 @@ function create() {
 	bgScript = Script.create(Paths.script('data/backgrounds/'+backgroundName));
 	scripts.add(bgScript);
 
-	for(file in Paths.getFolderContent('data/scripts')) {
+	bgJson = Json.parse(Assets.getText(Paths.json('backgrounds/'+backgroundName)));
+
+	for(file in Paths.getFolderContent('data/pizza/scripts')) {
 		var fileShits = file.split('.');
 		if (Script.scriptExtensions.contains(fileShits[1].toLowerCase()))
-			scripts.add(Script.create(Paths.script('data/scripts/'+file)));
+			scripts.add(Script.create(Paths.script('data/pizza/scripts/'+file)));
 	}
 
 	camPos = new FlxSprite(0,0);
@@ -64,8 +69,8 @@ function create() {
 	hudcam.bgColor = 0x00000000;
 	FlxG.cameras.add(hudcam, false);
 
-	player = new Player(25, 25, null, false, backgroundName);
-	var civilian = new Civilian(50, 10, null, false, backgroundName);
+	player = new Player(25, 25, null, false, bgJson.playerSkin);
+	var civilian = new Civilian(50, 10, null, false, bgJson.civilianSkin);
 	civilians.push(civilian);
 
 	var testnpc:NPC = new NPC(1152, 448);
@@ -85,7 +90,7 @@ function create() {
 	tileGroup = new FlxTypedGroup();
 	for (i in ass) {
 		var cock = i.split(',');
-		var tile:Tile = new Tile(cock[2], backgroundName);
+		var tile:Tile = new Tile(cock[2], backgroundName, false);
 		tile.x = cock[0];
 		tile.y = cock[1];
 		tile.scale.set(4, 4);
