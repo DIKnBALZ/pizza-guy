@@ -20,6 +20,7 @@ class Player extends funkin.backend.FunkinSprite {
 	public var sliding:Bool = false;
 	public var disableControls:Bool = false;
 	public var dashed:Bool = false;
+	public var attacked:Bool = false;
 	public var playedWalkSound:Bool = false;
 	public var playedLandSound:Bool = false;
 	public var debugMode:Bool = false;
@@ -27,6 +28,28 @@ class Player extends funkin.backend.FunkinSprite {
 	public var curCharacter:String = 'default';
 	public var charJson;
 	public var charScript;
+
+	public var left = FlxG.keys.pressed.A || FlxG.keys.pressed.LEFT;
+	public var down = FlxG.keys.pressed.S || FlxG.keys.pressed.DOWN;
+	public var up = FlxG.keys.pressed.W || FlxG.keys.pressed.UP;
+	public var right = FlxG.keys.pressed.D || FlxG.keys.pressed.RIGHT;
+
+	public var leftJ = FlxG.keys.justPressed.A || FlxG.keys.justPressed.LEFT;
+	public var downJ = FlxG.keys.justPressed.S || FlxG.keys.justPressed.DOWN;
+	public var upJ = FlxG.keys.justPressed.W || FlxG.keys.justPressed.UP;
+	public var rightJ = FlxG.keys.justPressed.D || FlxG.keys.justPressed.RIGHT;
+
+	public var jump = FlxG.keys.pressed.SPACE || FlxG.keys.pressed.C;
+	public var jumpJ = FlxG.keys.justPressed.SPACE || FlxG.keys.justPressed.C;
+
+	public var sprint = FlxG.keys.pressed.SHIFT || FlxG.keys.pressed.Z;
+	public var sprintJ = FlxG.keys.justPressed.SHIFT || FlxG.keys.justPressed.Z;
+
+	public var action = FlxG.keys.pressed.E || FlxG.keys.pressed.X;
+	public var actionJ = FlxG.keys.justPressed.E || FlxG.keys.justPressed.X;
+
+	public var cancel = FlxG.keys.pressed.CONTROL || FlxG.keys.pressed.V;
+	public var cancelJ = FlxG.keys.justPressed.CONTROL || FlxG.keys.justPressed.V;
 	public function new(xPos:Float, yPos:Float, ?ignore, ?debug:Bool = false, ?skin:String = null) {
 		moves = true;
 		x = xPos;
@@ -72,15 +95,37 @@ class Player extends funkin.backend.FunkinSprite {
 	}
 
 	public function update(elapsed:Float) {
+		left = FlxG.keys.pressed.A || FlxG.keys.pressed.LEFT;
+		down = FlxG.keys.pressed.S || FlxG.keys.pressed.DOWN;
+		up = FlxG.keys.pressed.W || FlxG.keys.pressed.UP;
+		right = FlxG.keys.pressed.D || FlxG.keys.pressed.RIGHT;
+
+		leftJ = FlxG.keys.justPressed.A || FlxG.keys.justPressed.LEFT;
+		downJ = FlxG.keys.justPressed.S || FlxG.keys.justPressed.DOWN;
+		upJ = FlxG.keys.justPressed.W || FlxG.keys.justPressed.UP;
+		rightJ = FlxG.keys.justPressed.D || FlxG.keys.justPressed.RIGHT;
+
+		jump = FlxG.keys.pressed.SPACE || FlxG.keys.pressed.C;
+		jumpJ = FlxG.keys.justPressed.SPACE || FlxG.keys.justPressed.C;
+
+		sprint = FlxG.keys.pressed.SHIFT || FlxG.keys.pressed.Z;
+		sprintJ = FlxG.keys.justPressed.SHIFT || FlxG.keys.justPressed.Z;
+
+		action = FlxG.keys.pressed.E || FlxG.keys.pressed.X;
+		actionJ = FlxG.keys.justPressed.E || FlxG.keys.justPressed.X;
+
+		cancel = FlxG.keys.pressed.CONTROL || FlxG.keys.pressed.V;
+		cancelJ = FlxG.keys.justPressed.CONTROL || FlxG.keys.justPressed.V;
+
 		if (charScript != null) charScript.call('update', [elapsed]);
 
 		if (!debugMode && !disableControls) {
 			if (!(blacklist.contains(animation.name) && !animation.curAnim.finished) && !disableControls) {
 				if (!sliding) {
-					if (FlxG.keys.pressed.A) acceleration.x = -speed;
-					else if (FlxG.keys.pressed.D) acceleration.x = speed;
+					if (left) acceleration.x = -speed;
+					else if (right) acceleration.x = speed;
 					else acceleration.x = 0;
-					if (FlxG.keys.pressed.SPACE) {
+					if (jump) {
 						if (isTouching(0x1000)) {
 							DONT = true;
 							animation.play('jump', true);
@@ -90,11 +135,13 @@ class Player extends funkin.backend.FunkinSprite {
 							velocity.y -= elapsed * somethingIDK;
 						}
 					}
-					sprinting = FlxG.keys.pressed.SHIFT;
+					sprinting = sprint;
 		
-					if (FlxG.keys.pressed.E || FlxG.mouse.pressed) {
-						if (!sprinting || dashed) animation.play('attack', false);
-						else if (Math.abs(velocity.x) >= maxVelX-1 && !dashed && sprinting) {
+					if (action) {
+						if ((!sprinting || dashed) && !attacked) {
+							animation.play('attack', false);
+							attacked = true;
+						} else if (Math.abs(velocity.x) >= maxVelX-1 && !dashed && sprinting) {
 							dashed = true;
 							animation.play('dash', false);
 							velocity.y -= Math.abs(velocity.y);
@@ -104,7 +151,7 @@ class Player extends funkin.backend.FunkinSprite {
 						}
 					}
 		
-					if (FlxG.keys.pressed.S || FlxG.mouse.pressedRight) {
+					if (down) {
 						if (isTouching(0x1000) && !sliding && velocity.x != 0) {
 							animation.play('roll', true);
 							sliding = true;
@@ -121,7 +168,7 @@ class Player extends funkin.backend.FunkinSprite {
 				}
 		
 				if (sliding) {
-					sliding = ((FlxG.keys.pressed.S || FlxG.mouse.pressedRight) && velocity.x != 0);
+					sliding = (down && velocity.x != 0);
 				}
 					
 				if (!DONT && !sliding) {
@@ -139,7 +186,7 @@ class Player extends funkin.backend.FunkinSprite {
 						playedWalkSound = false;
 					}
 				}
-			} else if (FlxG.keys.justPressed.CONTROL || FlxG.mouse.justPressedMiddle) {
+			} else if (cancel) {
 				animation.play(velocity.y!=0?'fall':'idle', true);
 				velocity.y -= Math.abs(velocity.y);
 			}
@@ -148,6 +195,7 @@ class Player extends funkin.backend.FunkinSprite {
 			if (isTouching(0x0100)) velocity.y = 10; // easiest fix of my life B)
 			if (isTouching(0x0011)) velocity.x = 0; // easiest fix of my life B)
 			if (isTouching(0x1000)) {
+				attacked = false;
 				dashed = false;
 				if (!playedLandSound) {
 					FlxG.sound.play(Paths.file('sounds/land.wav'));
