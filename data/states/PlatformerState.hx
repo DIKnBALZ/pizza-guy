@@ -1,9 +1,9 @@
-import Player;
-import Civilian;
-import NPC;
-import Tile;
-import Door;
-import Particle;
+import pizza.game.entities.Player;
+import pizza.game.entities.Civilian;
+import pizza.game.entities.NPC;
+import pizza.game.objects.Tile;
+import pizza.game.objects.Door;
+import pizza.game.objects.Particle;
 
 import sys.io.File;
 

@@ -2,7 +2,7 @@ import flixel.FlxG;
 import funkin.backend.assets.Paths;
 import Math;
 import Std;
-import NPC;
+import pizza.game.entities.NPC;
 import openfl.utils.Assets;
 import haxe.Json;
 import funkin.backend.scripting.Script;
