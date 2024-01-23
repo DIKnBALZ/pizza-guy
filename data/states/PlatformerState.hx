@@ -5,12 +5,6 @@ import pizza.game.objects.Tile;
 import pizza.game.objects.Door;
 import pizza.game.objects.Particle;
 
-import sys.io.File;
-
-import openfl.utils.Assets;
-
-import lime.app.Application;
-
 import haxe.io.Path;
 import haxe.ds.StringMap;
 
@@ -85,7 +79,7 @@ function create() {
 	// FlxG.camera.minScrollX = 0;
 	// FlxG.camera.maxScrollY = FlxG.height;
 
-	var ass = levelData == '' ? File.getContent(StringTools.replace(Paths.txt('levels/'+levelName+'/'+roomName+'/room'), 'assets', 'mods/cne-stuff')) : levelData;
+	var ass = levelData == '' ? Assets.getText(Paths.txt('levels/'+levelName+'/'+roomName+'/room')) : levelData;
 	ass = ass.split('\n');
 	tileGroup = new FlxTypedGroup();
 	for (i in ass) {
@@ -112,7 +106,7 @@ function create() {
 	scripts.call('create');
 
 	add(tileGroup);
-	ass = doorData == '' ? File.getContent(StringTools.replace(Paths.txt('levels/'+levelName+'/'+roomName+'/doors'), 'assets', 'mods/cne-stuff')) : doorData;
+	ass = doorData == '' ? Assets.getText(Paths.txt('levels/'+levelName+'/'+roomName+'/doors')) : doorData;
 	ass = ass.split('\n');
 	for (i in ass) {
 		var cock = i.split(',');
